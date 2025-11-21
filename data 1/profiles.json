@@ -1,0 +1,94 @@
+[
+    {
+        "uid": "u001",
+        "firstName": "John",
+        "lastName": "Doe",
+        "imgPath": "images\/john_doe.jpg",
+        "backgroundType": "color",
+        "backgroundColor": "#3498db",
+        "backgroundImage": "",
+        "followers": [],
+        "following": []
+    },
+    {
+        "uid": "u002",
+        "firstName": "Sarah",
+        "lastName": "Williams",
+        "imgPath": "images\/sarah_williams.jpg",
+        "backgroundType": "color",
+        "backgroundColor": "#e74c3c",
+        "backgroundImage": "",
+        "followers": [],
+        "following": []
+    },
+    {
+        "uid": "u003",
+        "firstName": "Michael",
+        "lastName": "Brown",
+        "imgPath": "images\/michael_brown.jpg",
+        "backgroundType": "color",
+        "backgroundColor": "#2ecc71",
+        "backgroundImage": "",
+        "followers": [],
+        "following": []
+    },
+    {
+        "uid": "u004",
+        "firstName": "Lucy",
+        "lastName": "Chen",
+        "imgPath": "images\/lucy_chen.jpg",
+        "backgroundType": "color",
+        "backgroundColor": "#9b59b6",
+        "backgroundImage": "",
+        "followers": [],
+        "following": []
+    },
+    {
+        "uid": "u005",
+        "firstName": "Thomas",
+        "lastName": "Rogers",
+        "imgPath": "https:\/\/www.hawaiipacifichealth.org\/physicians\/thomas_rodgers_11119260_portrait.jpg",
+        "backgroundType": "color",
+        "backgroundColor": "#f39c12",
+        "backgroundImage": "",
+        "followers": [
+            "u90877"
+        ],
+        "following": []
+    },
+    {
+        "uid": "u90877",
+        "firstName": "Zaid",
+        "lastName": "Nazar",
+        "imgPath": "https:\/\/image-cdn.hypb.st\/https%3A%2F%2Fhypebeast.com%2Fimage%2F2024%2F10%2F08%2Fdrake-ovo-family-front-new-og-campaign-collection-release-info-004.jpg?q=75&w=800&cbr=1&fit=max",
+        "backgroundType": "image",
+        "backgroundColor": "#890606",
+        "backgroundImage": "https:\/\/i.pinimg.com\/736x\/c2\/9b\/34\/c29b34ad3dd5f424650f336277a48b6e.jpg",
+        "followers": [],
+        "following": [
+            "u005"
+        ]
+    },
+    {
+        "uid": "u88063",
+        "firstName": "Mike1",
+        "lastName": "Benrud",
+        "imgPath": "images\/default_profile.jpg",
+        "backgroundType": "color",
+        "backgroundColor": "#3498db",
+        "backgroundImage": "",
+        "followers": [],
+        "following": []
+    },
+    {
+        "uid": "u87683",
+        "firstName": "daiz",
+        "lastName": "razan",
+        "imgPath": "images\/default_profile.jpg",
+        "backgroundType": "color",
+        "backgroundColor": "#3498db",
+        "backgroundImage": "",
+        "followers": [],
+        "following": []
+    }
+]
