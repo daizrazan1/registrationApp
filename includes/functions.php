@@ -79,13 +79,12 @@ function authenticateUser(string $username, string $password): int|false
 
 /**
  * Registers a new user and creates their profile (MySQL transaction).
- * FIX: Uses snake_case column names for INSERT into 'profiles' table.
  * @param string $username
  * @param string $email
  * @param string $password
  * @param string $firstName
  * @param string $lastName
- * @return int|false The new user's UID (from auto-increment) on success, false on failure.
+ * @return int|false The new user's ID (from auto-increment) on success, false on failure.
  */
 function createUser(string $username, string $email, string $password, string $firstName, string $lastName): int|false
 {
@@ -106,15 +105,17 @@ function createUser(string $username, string $email, string $password, string $f
 
         $newUserId = (int)$pdo->lastInsertId();
 
-        // 2. Insert into profiles table with correct snake_case column names
-        $sqlProfile = "INSERT INTO profiles (uid, first_name, last_name, img_path, background_type, background_color) 
-                       VALUES (:uid, :firstName, :lastName, :imgPath, 'color', '#3498db')";
+        // 2. Insert into profiles table using correct column names (user_id, camelCase columns)
+        $sqlProfile = "INSERT INTO profiles (user_id, first_name, last_name, img_path, backgroundType, backgroundColor) 
+                       VALUES (:user_id, :firstName, :lastName, :imgPath, :backgroundType, :backgroundColor)";
         $stmtProfile = $pdo->prepare($sqlProfile);
         $stmtProfile->execute([
-            ':uid' => $newUserId,
+            ':user_id' => $newUserId,
             ':firstName' => $firstName,
             ':lastName' => $lastName,
-            ':imgPath' => 'https://via.placeholder.com/120' // Default image
+            ':imgPath' => 'https://via.placeholder.com/120',
+            ':backgroundType' => 'color',
+            ':backgroundColor' => '#3498db'
         ]);
 
         $pdo->commit();
@@ -122,14 +123,13 @@ function createUser(string $username, string $email, string $password, string $f
 
     } catch (PDOException $e) {
         $pdo->rollBack();
-        // error_log("Registration failed: " . $e->getMessage());
+        error_log("Registration failed: " . $e->getMessage());
         return false;
     }
 }
 
 /**
  * Fetches combined user and profile data for a given UID (MySQL JOIN).
- * FIX: Uses snake_case columns with AS camelCase aliases.
  * @param int $uid
  * @return array|false The profile array on success, false otherwise.
  */
@@ -139,10 +139,10 @@ function getUserProfile(int $uid): array|false
     $sql = "SELECT 
                 u.id AS uid, u.username, u.email,
                 p.first_name AS firstName, p.last_name AS lastName, 
-                p.img_path AS imgPath, p.background_type AS backgroundType, 
-                p.background_color AS backgroundColor, p.background_image AS backgroundImage
+                p.img_path AS imgPath, p.backgroundType, 
+                p.backgroundColor, p.backgroundImage
             FROM users u
-            JOIN profiles p ON u.id = p.uid
+            JOIN profiles p ON u.id = p.user_id
             WHERE u.id = :uid";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':uid', $uid, PDO::PARAM_INT);
@@ -152,7 +152,6 @@ function getUserProfile(int $uid): array|false
 
 /**
  * Fetches all user profiles, excluding the current user (MySQL).
- * FIX: Uses snake_case columns with AS camelCase aliases.
  * @param int $currentUid
  * @return array A list of user profile arrays.
  */
@@ -164,7 +163,7 @@ function getAllUsers(int $currentUid): array
                 p.first_name AS firstName, p.last_name AS lastName, 
                 p.img_path AS imgPath
             FROM users u
-            JOIN profiles p ON u.id = p.uid
+            JOIN profiles p ON u.id = p.user_id
             WHERE u.id != :currentUid";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':currentUid', $currentUid, PDO::PARAM_INT);
@@ -176,7 +175,6 @@ function getAllUsers(int $currentUid): array
 
 /**
  * Updates user information across the 'users' (email) and 'profiles' (names, image) tables (MySQL).
- * FIX: Uses snake_case column names for UPDATE in 'profiles' table.
  * @param int $uid
  * @param string $firstName
  * @param string $lastName
@@ -195,12 +193,12 @@ function updateUserProfile(int $uid, string $firstName, string $lastName, string
         $stmtUser = $pdo->prepare($sqlUser);
         $stmtUser->execute([':email' => $email, ':uid' => $uid]);
 
-        // 2. Update profiles table with correct snake_case column names
+        // 2. Update profiles table with correct column names
         $sqlProfile = "UPDATE profiles SET 
                        first_name = :firstName, 
                        last_name = :lastName, 
                        img_path = :imgPath 
-                       WHERE uid = :uid";
+                       WHERE user_id = :uid";
         $stmtProfile = $pdo->prepare($sqlProfile);
         $stmtProfile->execute([
             ':firstName' => $firstName,
@@ -214,14 +212,13 @@ function updateUserProfile(int $uid, string $firstName, string $lastName, string
 
     } catch (PDOException $e) {
         $pdo->rollBack();
-        // error_log("Profile update failed: " . $e->getMessage());
+        error_log("Profile update failed: " . $e->getMessage());
         return false;
     }
 }
 
 /**
  * Updates the profile background settings for a specific user (MySQL).
- * FIX: Uses snake_case column names for UPDATE in 'profiles' table.
  * @param int $uid The user ID.
  * @param string $backgroundType 'color' or 'image'.
  * @param string $backgroundColor The hex color code.
@@ -237,10 +234,10 @@ function updateProfileBackground(int $uid, string $backgroundType, string $backg
     }
 
     $sql = "UPDATE profiles SET 
-                background_type = :backgroundType, 
-                background_color = :backgroundColor, 
-                background_image = :backgroundImage 
-            WHERE uid = :uid";
+                backgroundType = :backgroundType, 
+                backgroundColor = :backgroundColor, 
+                backgroundImage = :backgroundImage 
+            WHERE user_id = :uid";
 
     try {
         $stmt = $pdo->prepare($sql);
@@ -251,7 +248,7 @@ function updateProfileBackground(int $uid, string $backgroundType, string $backg
 
         return $stmt->execute();
     } catch (PDOException $e) {
-        // error_log("Database error in updateProfileBackground: " . $e->getMessage());
+        error_log("Database error in updateProfileBackground: " . $e->getMessage());
         return false;
     }
 }

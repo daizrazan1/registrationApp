@@ -130,13 +130,13 @@ if (!$viewProfile) {
         }
         
         // This now calls the MySQL-based isFollowing function
-        $isFollowing = isFollowing($_SESSION['uid'], $viewProfile['id']);
+        $isFollowing = isFollowing($_SESSION['uid'], $viewProfile['uid']);
         ?>
         
         <div class="profile-content">
-            <img src="<?php echo htmlspecialchars($viewProfile['imgPath']); ?>" alt="Profile Picture" class="profile-image" onerror="this.src='https://via.placeholder.com/150'">
-            <h2><?php echo htmlspecialchars($viewProfile['firstName'] . ' ' . $viewProfile['lastName']); ?></h2>
-            <p class="text-muted">@<?php echo htmlspecialchars($viewProfile['username']); ?></p>
+            <img src="<?php echo htmlspecialchars($viewProfile['imgPath'] ?? 'https://via.placeholder.com/150'); ?>" alt="Profile Picture" class="profile-image" onerror="this.src='https://via.placeholder.com/150'">
+            <h2><?php echo htmlspecialchars(($viewProfile['firstName'] ?? 'User') . ' ' . ($viewProfile['lastName'] ?? '')); ?></h2>
+            <p class="text-muted">@<?php echo htmlspecialchars($viewProfile['username'] ?? 'Unknown'); ?></p>
             
             <div class="d-flex justify-content-center gap-4 mt-3 mb-3">
                 <div><strong><?php echo count(json_decode($viewProfile['followers'] ?? '[]')); ?></strong> <span class="text-muted">Followers</span></div>
@@ -144,7 +144,7 @@ if (!$viewProfile) {
             </div>
             
             <form action="follow-action.php" method="POST" class="d-inline">
-                <input type="hidden" name="target_uid" value="<?php echo htmlspecialchars($viewProfile['id']); ?>"> 
+                <input type="hidden" name="target_uid" value="<?php echo htmlspecialchars($viewProfile['uid']); ?>"> 
                 <input type="hidden" name="action" value="<?php echo $isFollowing ? 'unfollow' : 'follow'; ?>">
                 <button type="submit" class="btn btn-<?php echo $isFollowing ? 'outline-primary' : 'primary'; ?>">
                     <?php echo $isFollowing ? 'Unfollow' : 'Follow'; ?>
@@ -158,17 +158,22 @@ if (!$viewProfile) {
         
         <div class="detail-row">
             <div class="detail-label">Username</div>
-            <div class="detail-value"><?php echo htmlspecialchars($viewProfile['username']); ?></div>
+            <div class="detail-value"><?php echo htmlspecialchars($viewProfile['username'] ?? 'N/A'); ?></div>
+        </div>
+        
+        <div class="detail-row">
+            <div class="detail-label">Email</div>
+            <div class="detail-value"><?php echo htmlspecialchars($viewProfile['email'] ?? 'N/A'); ?></div>
         </div>
         
         <div class="detail-row">
             <div class="detail-label">First Name</div>
-            <div class="detail-value"><?php echo htmlspecialchars($viewProfile['firstName']); ?></div>
+            <div class="detail-value"><?php echo htmlspecialchars($viewProfile['firstName'] ?? 'N/A'); ?></div>
         </div>
         
         <div class="detail-row">
             <div class="detail-label">Last Name</div>
-            <div class="detail-value"><?php echo htmlspecialchars($viewProfile['lastName']); ?></div>
+            <div class="detail-value"><?php echo htmlspecialchars($viewProfile['lastName'] ?? 'N/A'); ?></div>
         </div>
     </div>
 

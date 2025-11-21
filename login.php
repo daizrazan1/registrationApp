@@ -18,12 +18,16 @@ if ($_POST) {
     if (empty($username) || empty($password)) {
         $error = 'Please enter both username and password.';
     } else {
-        // authenticateUser now uses the MySQL database via PDO
+        // Authenticate user using MySQL database
         $userId = authenticateUser($username, $password);
         
         if ($userId) {
+            // Regenerate session ID for security
+            session_regenerate_id(true);
+            
             // Set the session variable to the database ID (integer)
             $_SESSION['uid'] = $userId;
+            $_SESSION['username'] = $username;
             
             // Redirect to the index page (which then loads profile/home)
             header('Location: index.php');

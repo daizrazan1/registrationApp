@@ -33,16 +33,20 @@ if ($_POST) {
         // MySQL-based check
         $error = 'Email already exists.';
     } else {
-        // Call the new MySQL-based createUser function
-        $newUserId = createUser($username, $email, $password, $firstName, $lastName);
-        
-        if ($newUserId) {
-            // Success: Log the user in and redirect.
-            $_SESSION['uid'] = $newUserId; 
-            header('Location: index.php'); // Redirects to index.php which then redirects to profile.php if user is logged in
-            exit;
-        } else {
-            $error = 'Registration failed. A database error occurred.';
+        // Call the new SQLite-based createUser function
+        try {
+            $newUserId = createUser($username, $email, $password, $firstName, $lastName);
+            
+            if ($newUserId) {
+                // Success: Log the user in and redirect.
+                $_SESSION['uid'] = $newUserId; 
+                header('Location: index.php'); // Redirects to index.php which then redirects to profile.php if user is logged in
+                exit;
+            } else {
+                $error = 'Registration failed. Could not create user account.';
+            }
+        } catch (Exception $e) {
+            $error = 'Registration error: ' . htmlspecialchars($e->getMessage());
         }
     }
 }
